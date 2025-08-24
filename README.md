@@ -1,6 +1,6 @@
 # Clippy AI Assistant 
 
-A nostalgic desktop assistant with a high‑fidelity Clippy, modern glass theme, and on‑device AI chat powered by node‑llama‑cpp. The app lives in the `clippy-ai/` folder.
+A nostalgic desktop assistant with a high‑fidelity Clippy and on‑device AI chat powered by node‑llama‑cpp. The app lives in the `clippy-ai/` folder.
 
 <!-- Screenshot placeholder: replace src with your image path -->
 <p align="center">

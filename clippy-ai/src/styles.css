@@ -1,0 +1,492 @@
+/* 1990s-inspired styling for Clippy AI Assistant */
+
+@import url('https://fonts.googleapis.com/css2?family=MS+Sans+Serif:wght@400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'MS Sans Serif', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 11px;
+    background: #c0c0c0;
+    color: #000000;
+    overflow: hidden;
+    user-select: none;
+}
+
+/* Custom Title Bar */
+.title-bar {
+    height: 24px;
+    background: linear-gradient(90deg, #0080ff, #0060df);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 8px;
+    font-size: 11px;
+    font-weight: bold;
+    -webkit-app-region: drag; /* Make title bar draggable */
+    border-bottom: 1px solid #003080;
+}
+
+.title-bar-text {
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+}
+
+.title-bar-controls {
+    display: flex;
+    gap: 2px;
+    -webkit-app-region: no-drag; /* Make buttons clickable */
+}
+
+.title-bar-control {
+    width: 16px;
+    height: 14px;
+    background: #c0c0c0;
+    border: 1px outset #c0c0c0;
+    font-size: 9px;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.title-bar-control:hover {
+    background: #d0d0d0;
+}
+
+.title-bar-control:active {
+    border: 1px inset #c0c0c0;
+}
+
+.title-bar-control.close:hover {
+    background: #ff6060;
+    color: white;
+}
+
+.app-container {
+    display: flex;
+    height: calc(100vh - 24px); /* Account for title bar */
+    background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 50%, #d0d0d0 100%);
+    position: relative;
+    border: 1px inset #c0c0c0;
+}
+
+/* Clippy Character Styling - Authentic SVG Clippy */
+.clippy-container {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    cursor: grab;
+}
+
+.clippy-character {
+    position: relative;
+    width: 90px;
+    height: 130px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    animation: float 4s ease-in-out infinite;
+}
+
+.clippy-character:hover {
+    transform: scale(1.1);
+}
+
+.clippy-container.dragging,
+.clippy-container:active {
+    cursor: grabbing;
+}
+
+/* SVG canvas */
+.clippy-svg {
+    position: absolute;
+    inset: 0;
+    overflow: visible;
+}
+
+/* Metallic lavender wire styling */
+.wire {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.3));
+}
+
+/* subtle highlight pass for depth (applied via duplicate path in SVG if needed) */
+.wire.highlight {
+    stroke: rgba(255,255,255,0.65);
+    stroke-width: 2.5;
+}
+
+/* Eye stalks */
+.stalk {
+    fill: none;
+    stroke: #b9b5e5;
+    stroke-width: 6;
+    stroke-linecap: round;
+}
+
+/* Eyebrows */
+.brow {
+    fill: none;
+    stroke: #0a0a0a;
+    stroke-width: 6;
+    stroke-linecap: round;
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+}
+.brow.left { transform: translate(0,0); }
+.brow.right { transform: translate(0,0); }
+
+/* Eye whites and pupils */
+.eye-white {
+    /* fill is defined inline in SVG to ensure gradient scoping works */
+    stroke: #ffffff;
+    stroke-width: 1;
+    filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.25));
+}
+.pupil {
+    fill: #111;
+}
+.pupil.left { animation: pupilLook 6s infinite ease-in-out; }
+.pupil.right { animation: pupilLook 6s infinite ease-in-out reverse; }
+
+@keyframes pupilLook {
+    0%, 100% { transform: translate(0,0); }
+    20% { transform: translate(-1px, 1px); }
+    40% { transform: translate(1px, -1px); }
+    60% { transform: translate(1px, 1px); }
+    80% { transform: translate(-1px, -1px); }
+}
+
+/* Hide only the old non-SVG eye elements */
+.clippy-eyes, .eye-stalk { display: none; }
+
+/* Authentic animations */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-2px); }
+}
+
+@keyframes blink {
+    0%, 94%, 100% { transform: scaleY(1); }
+    95%, 99% { transform: scaleY(0.1); }
+}
+
+/* Lively eyebrow raise */
+@keyframes browRaise {
+    0% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-6px) rotate(-4deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+}
+
+/* Eyes lift/widen slightly */
+@keyframes eyesLift {
+    0% { transform: translateY(0) scale(1); }
+    40% { transform: translateY(-2px) scale(1.03); }
+    100% { transform: translateY(0) scale(1); }
+}
+
+/* Trigger classes applied to the container */
+.clippy-character.raise-brows .brow { animation: browRaise 600ms ease-in-out; }
+.clippy-character.eyes-raise .eye { animation: eyesLift 500ms ease-in-out; transform-box: fill-box; transform-origin: 50% 50%; }
+.clippy-character.blink-once .eye { animation: blink 130ms ease-in-out 1; transform-box: fill-box; transform-origin: 50% 50%; }
+
+@keyframes eyeMove {
+    0%, 50%, 100% { transform: translate(0, 0); }
+    12.5% { transform: translate(1px, -1px); }
+    25% { transform: translate(-1px, 1px); }
+    37.5% { transform: translate(1px, 0px); }
+    62.5% { transform: translate(-1px, -1px); }
+    75% { transform: translate(1px, 1px); }
+    87.5% { transform: translate(-1px, 0px); }
+}
+
+/* Remove the spring since real Clippy doesn't have one */
+.clippy-spring {
+    display: none;
+}
+
+/* Add a subtle wiggle animation */
+.clippy-character.thinking {
+    animation: clippyWiggle 1s infinite ease-in-out;
+}
+
+@keyframes clippyWiggle {
+    0%, 100% { transform: rotate(-2deg); }
+    25% { transform: rotate(1deg) translateY(-2px); }
+    50% { transform: rotate(-1deg); }
+    75% { transform: rotate(2deg) translateY(-1px); }
+}
+
+/* Chat Bubble - More authentic positioning */
+.chat-bubble {
+    position: absolute;
+    top: -80px;
+    left: 90px;
+    width: 220px;
+    background: #ffffcc;
+    border: 2px solid #000;
+    border-radius: 15px;
+    padding: 12px;
+    box-shadow: 
+        inset 1px 1px 2px rgba(255,255,255,0.8),
+        3px 3px 8px rgba(0,0,0,0.4);
+    font-size: 12px;
+    line-height: 1.4;
+    animation: fadeIn 0.3s ease;
+    z-index: 20;
+    font-family: 'MS Sans Serif', sans-serif;
+}
+
+.bubble-tail {
+    position: absolute;
+    bottom: -8px;
+    left: 30px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #ffffcc;
+}
+
+.bubble-tail::before {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: -9px;
+    width: 0;
+    height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-top: 9px solid #000;
+}
+
+/* Chat Interface */
+.chat-interface {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #c0c0c0;
+    border: 2px inset #c0c0c0;
+    margin: 10px;
+}
+
+.chat-header {
+    background: #c0c0c0;
+    color: #000;
+    padding: 8px 12px;
+    border: 1px inset #c0c0c0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.chat-header h1 {
+    font-size: 14px;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff0000;
+    animation: pulse 2s infinite;
+}
+
+.status-dot.connected {
+    background: #00ff00;
+    animation: none;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.chat-history {
+    flex: 1;
+    padding: 10px;
+    background: white;
+    border: 1px inset #c0c0c0;
+    overflow-y: auto;
+    min-height: 300px;
+    font-size: 12px;
+}
+
+.message {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.message-content {
+    background: #f0f0f0;
+    border: 1px solid #999;
+    border-radius: 4px;
+    padding: 8px 12px;
+    max-width: 80%;
+    word-wrap: break-word;
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.user-message {
+    justify-content: flex-end;
+}
+
+.user-message .message-content {
+    background: #e0e0ff;
+    border-color: #8080ff;
+}
+
+.bot-message .message-content {
+    background: #ffffcc;
+    border-color: #cccc80;
+}
+
+.chat-input-container {
+    padding: 10px;
+    background: #c0c0c0;
+    border-top: 1px inset #c0c0c0;
+}
+
+.chat-form {
+    display: flex;
+    gap: 5px;
+}
+
+#messageInput {
+    flex: 1;
+    padding: 6px 8px;
+    border: 1px inset #c0c0c0;
+    font-family: inherit;
+    font-size: 11px;
+    background: white;
+}
+
+#messageInput:focus {
+    outline: none;
+    background: #ffffcc;
+}
+
+#sendButton {
+    padding: 6px 16px;
+    background: #c0c0c0;
+    border: 1px outset #c0c0c0;
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+    min-width: 60px;
+}
+
+#sendButton:active {
+    border: 1px inset #c0c0c0;
+}
+
+#sendButton:disabled {
+    background: #a0a0a0;
+    color: #606060;
+    cursor: not-allowed;
+}
+
+/* Loading Indicator */
+.loading-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #c0c0c0;
+    border: 2px outset #c0c0c0;
+    padding: 20px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #999;
+    border-top: 2px solid #0080ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    font-size: 11px;
+    color: #000;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.clippy-character.thinking {
+    animation: think 1s infinite ease-in-out;
+}
+
+@keyframes think {
+    0%, 100% { transform: rotate(-2deg); }
+    50% { transform: rotate(2deg); }
+}
+
+/* Scrollbar styling */
+.chat-history::-webkit-scrollbar {
+    width: 16px;
+}
+
+.chat-history::-webkit-scrollbar-track {
+    background: #c0c0c0;
+    border: 1px inset #c0c0c0;
+}
+
+.chat-history::-webkit-scrollbar-thumb {
+    background: #808080;
+    border: 1px outset #808080;
+}
+
+.chat-history::-webkit-scrollbar-thumb:hover {
+    background: #606060;
+}
+
+/* Welcome message styling */
+.welcome-message .message-content {
+    background: linear-gradient(135deg, #ffffcc, #ffffe0);
+    border: 2px solid #ffd700;
+    font-weight: bold;
+    text-align: center;
+}

@@ -1,0 +1,51 @@
+# Root .gitignore for Experiment-1
+
+# Node / Electron
+node_modules/
+dist/
+out/
+build/
+dist_electron/
+release/
+.cache/
+*.asar
+
+# Logs and coverage
+logs/
+*.log
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+coverage/
+
+# Environment files
+.env
+.env.*
+
+# Editor & OS cruft
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Project-specific: prevent large model files from being committed
+clippy-ai/models/**
+!clippy-ai/models/.gitkeep
+
+# Globally ignore common model/weight artifacts anywhere in the repo
+**/*.gguf
+**/*.safetensors
+**/*.bin
+**/*.pt
+**/*.pth
+**/*.ckpt
+**/*.onnx
+**/*.tflite
+**/*.mlmodel
+
+# Data dumps (keep dir via .gitkeep if needed)
+data/**
+datasets/**
+!data/.gitkeep
+!datasets/.gitkeep

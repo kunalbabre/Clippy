@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clippy AI Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Custom Title Bar for Frameless Window -->
+    <div class="title-bar">
+        <div class="title-bar-text">🖇️ Clippy</div>
+        <div class="title-bar-controls">
+            <button class="title-bar-control" id="minimizeBtn">_</button>
+            <button class="title-bar-control close" id="closeBtn">×</button>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Clippy Character -->
+        <div class="clippy-container">
+            <div class="clippy-character" id="clippy">
+                <!-- SVG-based authentic Clippy shape -->
+                <svg class="clippy-svg" width="90" height="130" viewBox="0 0 90 130" aria-hidden="true">
+                    <defs>
+                        <!-- Metallic lavender gradient for wire -->
+                        <linearGradient id="wireGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#dcd8ff"/>
+                            <stop offset="50%" stop-color="#8e88c9"/>
+                            <stop offset="100%" stop-color="#6660ad"/>
+                        </linearGradient>
+                        <!-- Eye shading -->
+                        <radialGradient id="eyeGrad" cx="50%" cy="40%" r="70%">
+                            <stop offset="0%" stop-color="#ffffff"/>
+                            <stop offset="80%" stop-color="#f3f3ff"/>
+                            <stop offset="100%" stop-color="#e5e6ff"/>
+                        </radialGradient>
+                        <!-- Smiling eye masks so eyes render as happy crescents -->
+                        <mask id="leftSmileMask">
+                            <rect x="0" y="0" width="100%" height="100%" fill="black"/>
+                            <!-- Deeper arc across top, reveal area below it -->
+                            <path d="M16 30 Q30 52 46 30 L46 66 L16 66 Z" fill="white"/>
+                        </mask>
+                        <mask id="rightSmileMask">
+                            <rect x="0" y="0" width="100%" height="100%" fill="black"/>
+                            <path d="M42 32 Q56 54 72 32 L72 68 L42 68 Z" fill="white"/>
+                        </mask>
+                    </defs>
+                    <!-- Left big loop (outer) - taller top arch and fuller bottom U -->
+              <path class="wire" stroke="url(#wireGrad)"
+                  d="M34 8
+                     Q28 10 28 26
+                     L28 104
+                     Q28 124 45 124
+                     Q62 124 62 104
+                     L62 26
+                     Q62 10 52 8"/>
+              <path class="wire highlight"
+                  d="M34 8
+                     Q28 10 28 26
+                     L28 104
+                     Q28 124 45 124
+                     Q62 124 62 104
+                     L62 26
+                     Q62 10 52 8"/>
+
+                    <!-- Inner small loop inside left loop - slimmer and deeper -->
+              <path class="wire" stroke="url(#wireGrad)"
+                  d="M48 60
+                     Q44 60 44 70
+                     L44 100
+                     Q44 112 54 112
+                     L58 112
+                     Q66 112 66 100
+                     L66 76
+                     Q66 66 58 66" />
+              <path class="wire highlight"
+                  d="M48 60
+                     Q44 60 44 70
+                     L44 100
+                     Q44 112 54 112
+                     L58 112
+                     Q66 112 66 100
+                     L66 76
+                     Q66 66 58 66" />
+
+                    <!-- Right-side U bend - moved slightly outward and more open top -->
+              <path class="wire" stroke="url(#wireGrad)"
+                  d="M76 60
+                     L76 108
+                     Q76 124 58 124
+                     L56 124
+                     Q40 124 40 108
+                     L40 92
+                     Q40 80 52 80" />
+              <path class="wire highlight"
+                  d="M76 60
+                     L76 108
+                     Q76 124 58 124
+                     L56 124
+                     Q40 124 40 108
+                     L40 92
+                     Q40 80 52 80" />
+
+                    <!-- Eye stalks -->
+                    <path class="stalk" d="M32 8 L32 32" />
+                    <path class="stalk" d="M58 10 L58 34" />
+
+                    <!-- Eyes (fully open) -->
+                    <g class="eye left-eye">
+                        <circle class="eye-white" cx="33" cy="36" r="14" fill="url(#eyeGrad)" />
+                        <circle class="pupil left" cx="36" cy="40" r="6.2" />
+                        <circle cx="38" cy="38" r="2.2" fill="#ffffff" opacity="0.8" />
+                    </g>
+                    <g class="eye right-eye">
+                        <circle class="eye-white" cx="59" cy="38" r="13" fill="url(#eyeGrad)" />
+                        <circle class="pupil right" cx="62" cy="42" r="6" />
+                        <circle cx="64" cy="40" r="2" fill="#ffffff" opacity="0.8" />
+                    </g>
+
+                    <!-- Eyebrows (drawn on top) -->
+                    <path class="brow left" d="M16 20 Q30 6 46 20" />
+                    <path class="brow right" d="M44 22 Q60 8 76 20" />
+                </svg>
+            </div>
+            
+            <!-- Chat Bubble -->
+            <div class="chat-bubble" id="chatBubble" style="display: none;">
+                <div class="bubble-content" id="bubbleContent"></div>
+                <div class="bubble-tail"></div>
+            </div>
+        </div>
+
+        <!-- Chat Interface -->
+        <div class="chat-interface">
+            <div class="chat-header">
+                <div class="status-indicator" id="statusIndicator">
+                    <span class="status-dot"></span>
+                    <span class="status-text" id="statusText">Initializing...</span>
+                </div>
+            </div>
+
+            <div class="chat-history" id="chatHistory">
+                <div class="welcome-message">
+                    <div class="message bot-message">
+                        <div class="message-content">
+                            Hi there! I'm Clippy, your friendly AI assistant! 📎<br>
+                            How can I help you today?
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <form class="chat-form" id="chatForm">
+                    <input 
+                        type="text" 
+                        id="messageInput" 
+                        placeholder="Type your message here..." 
+                        autocomplete="off"
+                        disabled
+                    >
+                    <button type="submit" id="sendButton" disabled>
+                        Send
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div class="loading-indicator" id="loadingIndicator" style="display: none;">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Clippy is thinking...</div>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

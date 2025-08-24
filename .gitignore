@@ -22,6 +22,18 @@ coverage/
 .env
 .env.*
 
+# Certificates / signing keys (prevent accidental commits)
+*.pem
+*.key
+*.crt
+*.cer
+*.pfx
+*.p12
+*.mobileprovision
+*.provisionprofile
+*.jks
+*.keystore
+
 # Editor & OS cruft
 .vscode/
 .idea/

@@ -7,5 +7,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   checkLLMStatus: () => ipcRenderer.invoke('check-llm-status'),
   onPartialResponse: (callback) => ipcRenderer.on('partial-response', (event, token) => callback(token)),
   minimizeWindow: () => ipcRenderer.invoke('minimize-window'),
-  closeWindow: () => ipcRenderer.invoke('close-window')
+  closeWindow: () => ipcRenderer.invoke('close-window'),
+  listModels: () => ipcRenderer.invoke('list-models'),
+  getSettings: () => ipcRenderer.invoke('get-settings'),
+  applySettings: (settings) => ipcRenderer.invoke('apply-settings', settings)
+  ,generateFunFact: () => ipcRenderer.invoke('generate-fun-fact')
+  ,generateFunFacts: (count) => ipcRenderer.invoke('generate-fun-facts', count)
 });

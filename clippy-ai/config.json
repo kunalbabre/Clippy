@@ -3,9 +3,9 @@
   "description": "A nostalgic AI desktop assistant powered by local LLM",
   "version": "1.0.0",
   "llm": {
-    "defaultModel": null,
+    "defaultModel": "tinyllama-1.1b-chat-v1.0.q4_k_m.gguf",
     "contextSize": 4096,
-    "temperature": 0.7,
+    "temperature": 0.25,
     "maxTokens": 512
   },
   "ui": {

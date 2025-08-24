@@ -1,151 +1,88 @@
-# Clippy AI Desktop Assistant
+# Clippy AI Assistant
 
-A nostalgic AI desktop assistant that brings the beloved Clippy character to life with modern local LLM capabilities.
+A nostalgic desktop assistant with a high‑fidelity Clippy, a modern glass theme, and on‑device AI chat powered by node‑llama‑cpp. Click Clippy for fun facts, drag him around, and tweak settings like model, temperature, and theme.
+
+<!-- Screenshot placeholder: replace src with your image path -->
+<p align="center">
+  <img src="docs/screenshot.png" alt="Clippy AI Assistant" width="640" />
+</p>
 
 ## Features
-
-- 🖇️ **Nostalgic Interface**: Authentic 1990s Microsoft Office assistant styling
-- 🔒 **Complete Privacy**: All AI processing happens locally on your device
-- 💬 **Interactive Chat**: Natural conversation with streaming responses
-- 🎭 **Character Animations**: Clippy reacts and animates during conversations
-- 📱 **Cross-Platform**: Runs on Windows, macOS, and Linux
+- Local LLM chat with streaming replies (no cloud required)
+- Classic and Modern themes, settings panel, and quick actions menu
+- Draggable Clippy with eye‑tracking; glow/particles when thinking
+- Fun facts on click with background prefetch and fallback
+- Auto model fetch on build; easy model switching via Settings
 
 ## Prerequisites
+- Node.js 18 or 20 (LTS recommended)
+- Windows 10/11. A Vulkan‑capable GPU is recommended but optional (CPU fallback works)
+- ~0.5 GB disk for the default TinyLlama model (more for larger models)
 
-- Node.js 16+ installed on your system
-- At least 8GB RAM
-- A compatible GGUF model file (see Model Setup below)
+## Quick start (PowerShell)
+```powershell
+# From the project root (clippy-ai)
+# 1) Install dependencies
+npm install
 
-## Installation
+# 2) Download a starter model (if models/ is empty)
+npm run download-model
 
-1. **Clone or download this project**
-   ```bash
-   cd clippy-ai
-   ```
+# 3) Start the app in dev mode
+npm start
+```
+First run will initialize the model; subsequent runs are faster.
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Set up a language model** (see Model Setup section below)
-
-4. **Run the application**
-   ```bash
-   npm start
-   ```
-
-## Model Setup
-
-To use Clippy AI, you need to provide a compatible GGUF language model:
-
-1. **Create the models directory** (if it doesn't exist):
-   ```bash
-   mkdir models
-   ```
-
-2. **Download a compatible model**. Here are some recommended options:
-
-   **Lightweight Models (4-8GB RAM):**
-   - [Llama 2 7B Chat GGUF](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF)
-   - [Mistral 7B Instruct GGUF](https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF)
-
-   **Medium Models (12-16GB RAM):**
-   - [Llama 2 13B Chat GGUF](https://huggingface.co/TheBloke/Llama-2-13B-Chat-GGUF)
-
-3. **Place the `.gguf` file** in the `models/` directory
-
-4. **Restart the application** - Clippy will automatically detect and load the model
-
-### Example Download Commands
-
+## Quick start (bash)
 ```bash
-# For Llama 2 7B (Q4_K_M quantization - good balance of quality and speed)
-curl -L -o models/llama-2-7b-chat.q4_k_m.gguf \
-  "https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF/resolve/main/llama-2-7b-chat.q4_k_m.gguf"
+# From the project root (clippy-ai)
+# 1) Install dependencies
+npm install
 
-# For Mistral 7B (Q4_K_M quantization)
-curl -L -o models/mistral-7b-instruct-v0.1.q4_k_m.gguf \
-  "https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/resolve/main/mistral-7b-instruct-v0.1.q4_k_m.gguf"
+# 2) Download a starter model (if models/ is empty)
+npm run download-model
+
+# 3) Start the app in dev mode
+npm start
+```
+First run will initialize the model; subsequent runs are faster.
+
+## Build installers
+The build auto‑fetches a default model if none exists and bundles `models/` as an extra resource.
+```powershell
+# Windows installer
+npm run build:win
+
+# Other targets (run on their respective OS)
+npm run build:mac
+npm run build:linux
 ```
 
-## Development
+## Settings and tips
+- Open the Settings (gear icon):
+  - Pick a GGUF model from `models/`
+  - Adjust temperature and max tokens
+  - Toggle Classic/Modern theme
+- Right‑click in the chat for quick actions (summarize, rewrite, bullets, explain)
+- Click Clippy to show a fun fact; a small queue is prefetched for instant popups
 
-### Running in Development Mode
-```bash
-npm run dev
-```
-This opens the app with developer tools enabled.
+## Models
+- Default: TinyLlama 1.1B Chat (Q4_K_M). Small and fast for demos.
+- Use a different model:
+  1) Place a `.gguf` file in `models/`
+  2) Open Settings → choose your model
+  3) Optionally tune temperature/max tokens
 
-### Building for Distribution
-```bash
-# Build for current platform
-npm run build
-
-# Build for specific platforms
-npm run build:win    # Windows
-npm run build:mac    # macOS
-npm run build:linux  # Linux
-```
-
-## Project Structure
-
-```
-clippy-ai/
-├── src/
-│   ├── main.js           # Electron main process
-│   ├── preload.js        # Secure IPC bridge
-│   ├── index.html        # Application UI
-│   ├── styles.css        # 1990s-inspired styling
-│   └── renderer.js       # Frontend logic
-├── assets/               # Icons and static assets
-├── models/               # LLM model files (.gguf)
-├── package.json          # Dependencies and scripts
-└── README.md            # This file
-```
+Tip: For better quality, try a 7B Q4_K_M chat model (larger/slower than TinyLlama).
 
 ## Troubleshooting
-
-### Common Issues
-
-**"No LLM model found" error:**
-- Ensure you have a `.gguf` file in the `models/` directory
-- Check that the file downloaded completely (should be several GB)
-- Restart the application after adding the model
-
-**Application runs out of memory:**
-- Try a smaller quantized model (Q4_K_M instead of Q8_0)
-- Close other memory-intensive applications
-- Ensure your system meets the minimum RAM requirements
-
-**Slow response times:**
-- Use a smaller model or higher quantization
-- Ensure no other CPU-intensive tasks are running
-- Consider upgrading your hardware
-
-### Performance Tips
-
-- **Q4_K_M quantization** provides the best balance of quality and speed
-- **7B parameter models** work well on most modern computers
-- **Close unnecessary applications** to free up RAM and CPU resources
-
-## Privacy & Security
-
-- **No Data Collection**: No user conversations are stored or transmitted
-- **Local Processing**: All AI inference happens on your device
-- **No Internet Required**: Works completely offline after setup
-- **Open Source**: Full source code available for inspection
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit issues and pull requests.
+- Model not found or won’t load:
+  - Ensure a `.gguf` exists under `models/`
+  - Use Settings to select the correct file
+- Slow or GPU issues:
+  - Update GPU drivers. App falls back to CPU if needed
+- Build problems:
+  - Use Node 18/20; delete `node_modules` and run `npm install` again
 
 ## License
-
-MIT License - see LICENSE file for details.
-
-## Acknowledgments
-
-- Inspired by the original Microsoft Office Clippy assistant
-- Built with [Electron](https://electronjs.org/) and [node-llama-cpp](https://github.com/withcatai/node-llama-cpp)
-- Designed with love for the 1990s computing aesthetic ❤️
+MIT

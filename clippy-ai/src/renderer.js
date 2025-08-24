@@ -33,6 +33,10 @@ class ClippyAI {
         this.bubbleContent = document.getElementById('bubbleContent');
     this.bubbleTimer = null;
     this.lastFactIndex = -1;
+    this.particles = document.getElementById('thinkingParticles');
+    this.menu = document.getElementById('clippyMenu');
+    this.eyeLeft = null; // resolved later when DOM is ready
+    this.eyeRight = null;
     // Settings UI
     this.settingsBtn = document.getElementById('settingsBtn');
     this.settingsPanel = document.getElementById('settingsPanel');
@@ -96,6 +100,29 @@ class ClippyAI {
         window.electronAPI.onPartialResponse((token) => {
             this.appendToCurrentResponse(token);
         });
+
+        // Eye tracking towards cursor
+        window.addEventListener('mousemove', (e) => this.trackEyes(e));
+
+        // Context menu (right-click) actions on clippy area
+        this.clippyContainer.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            this.showContextMenu(e.clientX, e.clientY);
+        });
+        document.addEventListener('click', (e) => {
+            if (this.menu && this.menu.style.display !== 'none' && !this.menu.contains(e.target)) {
+                this.menu.style.display = 'none';
+            }
+        });
+        if (this.menu) {
+            this.menu.addEventListener('click', (e) => {
+                const btn = e.target.closest('button[data-action]');
+                if (!btn) return;
+                const action = btn.getAttribute('data-action');
+                this.onQuickAction(action);
+                this.menu.style.display = 'none';
+            });
+        }
 
         // Title bar controls
         document.getElementById('minimizeBtn').addEventListener('click', () => {
@@ -199,6 +226,8 @@ class ClippyAI {
             this.currentMessage = '';
 
             // Send message to main process
+            // Add streaming particles during thinking
+            const particleInterval = setInterval(() => this.spawnParticle(), 220);
             const result = await window.electronAPI.sendMessage(message);
 
             if (result.success) {
@@ -213,6 +242,8 @@ class ClippyAI {
         } finally {
             this.showLoading(false);
             this.setClippyThinking(false);
+            // stop particles
+            if (typeof particleInterval !== 'undefined') clearInterval(particleInterval);
             this.isProcessing = false;
         }
     }
@@ -574,6 +605,74 @@ class ClippyAI {
             const settings = await window.electronAPI.getSettings();
             this.applyTheme(settings?.ui?.theme || 'classic');
         } catch {}
+    }
+
+    // ---------- Eye tracking ----------
+    trackEyes(e) {
+        try {
+            if (!this.eyeLeft || !this.eyeRight) {
+                this.eyeLeft = document.querySelector('.pupil.left');
+                this.eyeRight = document.querySelector('.pupil.right');
+            }
+            const svg = document.querySelector('.clippy-svg');
+            if (!svg || !this.eyeLeft || !this.eyeRight) return;
+            const rect = svg.getBoundingClientRect();
+            const cx = e.clientX - rect.left;
+            const cy = e.clientY - rect.top;
+
+            // Constrain small movements
+            const look = (pupil, originX, originY, radius=2.2) => {
+                const dx = cx - originX;
+                const dy = cy - originY;
+                const len = Math.hypot(dx, dy) || 1;
+                const offX = (dx / len) * radius;
+                const offY = (dy / len) * radius;
+                pupil.style.transform = `translate(${offX}px, ${offY}px)`;
+            };
+            // Origins come from SVG eye centers
+            look(this.eyeLeft, 36, 40, 2.4);
+            look(this.eyeRight, 62, 42, 2.4);
+        } catch {}
+    }
+
+    // ---------- Particles ----------
+    spawnParticle() {
+        if (!this.particles) return;
+        const p = document.createElement('div');
+        p.className = 'p p-' + Math.floor(Math.random()*3);
+        const x = 36 + Math.random()*38; // spawn around eyes region
+        const y = 26 + Math.random()*22;
+        const dx = (-10 + Math.random()*20) + 'px';
+        const dy = (-30 - Math.random()*20) + 'px';
+        p.style.left = x + 'px';
+        p.style.top = y + 'px';
+        p.style.setProperty('--dx', dx);
+        p.style.setProperty('--dy', dy);
+        this.particles.appendChild(p);
+        setTimeout(() => p.remove(), 1800);
+    }
+
+    // ---------- Quick Actions ----------
+    showContextMenu(x, y) {
+        if (!this.menu) return;
+        const host = this.clippyContainer.getBoundingClientRect();
+        this.menu.style.left = Math.min(x - host.left, host.width - 210) + 'px';
+        this.menu.style.top = Math.min(y - host.top, host.height - 10) + 'px';
+        this.menu.style.display = 'block';
+    }
+
+    async onQuickAction(action) {
+        const sel = window.getSelection?.().toString().trim();
+        if (!sel) { this.showClippyMessage('Select some text first.'); return; }
+        const templates = {
+            summarize: `Summarize this briefly: "${sel}"`,
+            rewrite: `Rewrite friendlier and concise: "${sel}"`,
+            bullets: `Turn this into clear bullet points: "${sel}"`,
+            explain: `Explain this code simply: "${sel}"`
+        };
+        const prompt = templates[action] || sel;
+        this.messageInput.value = prompt;
+        this.sendMessage();
     }
 }
 

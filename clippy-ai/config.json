@@ -1,0 +1,21 @@
+{
+  "name": "Clippy AI Assistant",
+  "description": "A nostalgic AI desktop assistant powered by local LLM",
+  "version": "1.0.0",
+  "llm": {
+    "defaultModel": "tinyllama-1.1b-chat-v1.0.q4_k_m.gguf",
+    "contextSize": 4096,
+    "temperature": 0.25,
+    "maxTokens": 512
+  },
+  "ui": {
+    "theme": "classic",
+    "animations": true,
+    "chatBubbles": true
+  },
+  "privacy": {
+    "storeConversations": false,
+    "analytics": false,
+    "telemetry": false
+  }
+}

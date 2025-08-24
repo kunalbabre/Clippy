@@ -1,0 +1,7 @@
+# This is a placeholder for the application icon
+# In a real implementation, you would have:
+# - icon.png (256x256 for Linux)
+# - icon.ico (Windows icon)
+# - icon.icns (macOS icon)
+#
+# For now, the application will use default Electron icons

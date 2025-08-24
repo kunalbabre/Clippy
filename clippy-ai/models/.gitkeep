@@ -1,0 +1,9 @@
+# Add GGUF model files here
+# Recommended models:
+# - Llama 2 7B Chat GGUF (Q4_K_M quantization)
+# - Mistral 7B Instruct GGUF (Q4_K_M quantization)
+# 
+# Download from Hugging Face and place .gguf files in this directory
+# The application will automatically detect and load the first .gguf file found
+
+*.gguf

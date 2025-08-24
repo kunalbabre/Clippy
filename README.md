@@ -11,7 +11,7 @@ A nostalgic desktop assistant with a high‑fidelity Clippy, modern glass theme,
 - `clippy-ai/` — Electron app source, scripts, and docs
 - `ProductRequirements/` — PRD and requirements docs
 
-## Quick start (PowerShell)
+## Quick start
 ```powershell
 # From repo root
 cd clippy-ai
@@ -26,20 +26,6 @@ npm run download-model
 npm start
 ```
 
-## Quick start (bash)
-```bash
-# From repo root
-cd clippy-ai
-
-# 1) Install dependencies
-npm install
-
-# 2) Download a starter model (if models/ is empty)
-npm run download-model
-
-# 3) Start the app in dev mode
-npm start
-```
 
 ## Build installers
 ```powershell
